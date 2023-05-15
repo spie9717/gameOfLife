@@ -1,0 +1,250 @@
+import java.io.*;
+import java.util.*;
+class Game {
+ 
+    public static void printGrid(char mat[][])
+    {
+        for (char[] row : mat)
+            System.out.println(Arrays.toString(row));
+    }
+    
+    public static int getNeighbors(char mat[][], int row, int col)
+    {
+        int count = 0;
+        if(row != 0 && col != 0 && row != 19 && col != 19) {
+            //top left
+            if(mat[row-1][col-1] == 'O') {
+                count++;
+            }
+            //top
+            if(mat[row-1][col] == 'O') {
+                count++;
+            }
+            //top right
+            if(mat[row-1][col+1] == 'O') {
+                count++;
+            }
+            //left
+            if(mat[row][col-1] == 'O') {
+                count++;
+            }
+            //right
+            if(mat[row][col+1] == 'O') {
+                count++;
+            }
+            //bottom left
+            if(mat[row+1][col-1] == 'O') {
+                count++;
+            }
+            //bottom
+            if(mat[row+1][col] == 'O') {
+                count++;
+            }
+            //bottom right
+            if(mat[row+1][col+1] == 'O') {
+                count++;
+            }
+        }
+        //top left corner
+        else if(row == 0 && col == 0) {
+            //right
+            if(mat[row][col+1] == 'O') {
+                count++;
+            }
+            //bottom
+            if(mat[row+1][col] == 'O') {
+                count++;
+            }
+            //bottom right
+            if(mat[row+1][col+1] == 'O') {
+                count++;
+            }
+        }
+        //top right corner
+        else if(row == 0 && col == 19) {
+            //left
+            if(mat[row][col-1] == 'O') {
+                count++;
+            }
+            //bottom
+            if(mat[row+1][col] == 'O') {
+                count++;
+            }
+            //bottom left
+            if(mat[row+1][col-1] == 'O') {
+                count++;
+            }
+        }
+        //bottom right corner
+        else if(row == 19 && col == 19) {
+            //top
+            if(mat[row-1][col] == 'O') {
+                count++;
+            }
+            //left
+            if(mat[row][col-1] == 'O') {
+                count++;
+            }
+            //top left
+            if(mat[row-1][col-1] == 'O') {
+                count++;
+            }
+        }
+        //bottom left corner
+        else if(row == 19 && col == 0) {
+            //top
+            if(mat[row-1][col] == 'O') {
+                count++;
+            }
+            //right
+            if(mat[row][col+1] == 'O') {
+                count++;
+            }
+            //top right
+            if(mat[row-1][col+1] == 'O') {
+                count++;
+            }
+        }
+        //top edge
+        else if(row == 0) {
+            //left
+            if(mat[row][col-1] == 'O') {
+                count++;
+            }
+            //right
+            if(mat[row][col+1] == 'O') {
+                count++;
+            }
+            //bottom left
+            if(mat[row+1][col-1] == 'O') {
+                count++;
+            }
+            //bottom
+            if(mat[row+1][col] == 'O') {
+                count++;
+            }
+            //bottom right
+            if(mat[row+1][col+1] == 'O') {
+                count++;
+            }
+        }
+        //right edge
+        else if(col == 19) {
+            //top
+            if(mat[row-1][col] == 'O') {
+                count++;
+            }
+            //top left
+            if(mat[row-1][col-1] == 'O') {
+                count++;
+            }
+            //left
+            if(mat[row][col-1] == 'O') {
+                count++;
+            }
+            //bottom left
+            if(mat[row+1][col-1] == 'O') {
+                count++;
+            }
+            //bottom
+            if(mat[row+1][col] == 'O') {
+                count++;
+            }
+        }
+        //bottom edge
+        else if(row == 19) {
+            //left
+            if(mat[row][col-1] == 'O') {
+                count++;
+            }
+            //top left
+            if(mat[row-1][col-1] == 'O') {
+                count++;
+            }
+            //top
+            if(mat[row-1][col] == 'O') {
+                count++;
+            }
+            //top right
+            if(mat[row-1][col+1] == 'O') {
+                count++;
+            }
+            //right
+            if(mat[row][col+1] == 'O') {
+                count++;
+            }
+        }
+        //left edge
+        else if(col == 0) {
+            //top
+            if(mat[row-1][col] == 'O') {
+                count++;
+            }
+            //top right
+            if(mat[row-1][col+1] == 'O') {
+                count++;
+            }
+            //right
+            if(mat[row][col+1] == 'O') {
+                count++;
+            }
+            //bottom right
+            if(mat[row+1][col+1] == 'O') {
+                count++;
+            }
+            //bottom
+            if(mat[row+1][col] == 'O') {
+                count++;
+            }
+        }
+        return count;
+    }
+ 
+    public static void main(String args[])
+        throws IOException
+    {
+        char[][] twoD_arr = new char[20][20];
+        for (int i = 0; i < 20; i++) {
+            for (int j = 0; j < 20; j++) {
+                Random r = new Random();
+                //O = alive, X = dead
+                char c = r.nextBoolean() ? 'O' : 'X';
+                twoD_arr[i][j] = c;
+            }
+        }
+        //printGrid(twoD_arr);
+        char[][] copy = new char[20][20];
+        for (int k = 0; k<=15; k++) {
+            System.out.println("Generation " + k);
+            for (int i = 0; i<20; i++) {
+                for (int j = 0; j<20; j++) {
+                    int neighbors = getNeighbors(twoD_arr, i, j);
+                    //System.out.println(neighbors);
+                    //1. Any live cell with fewer than two live neighbors dies, as if caused by under-population
+                    if (twoD_arr[i][j] == 'O' && neighbors < 2) {
+                        copy[i][j] = 'X';
+                    }
+                    //3. Any live cell with more than three live neighbors dies, as if by over-population.
+                    else if (twoD_arr[i][j] == 'O' && neighbors > 3) {
+                        copy[i][j] = 'X';
+                    }
+                    //4. Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+                    else if (twoD_arr[i][j] == 'X' && neighbors == 3) {
+                        copy[i][j] = 'O';
+                    }
+                    //2. Any live cell with two or three live neighbors lives on to the next generation.
+                    else if (twoD_arr[i][j] == 'O' && (neighbors == 2 || neighbors == 3)) {
+                        copy[i][j] = 'O';
+                    }
+                    else {
+                        copy[i][j] = 'X';
+                    }
+                }
+            }
+            twoD_arr = copy;
+            printGrid(twoD_arr);
+            System.out.println("============================================================");
+        }
+    }
+    
+}
